@@ -7,13 +7,26 @@ services:
       - MONGODB_DATABASE="test"
     ports:
       - 27017:27017
+    networks:
+      - mnet
 
   mongo-express:
-    image: mongo-express
+    image: mongo-express:latest
+    container_name: mongo-express
     environment:
-      - ME_CONFIG_MONGODB_SERVER=mongo
-      - ME_CONFIG_MONGODB_PORT=27017
-    depends_on:
-      - mongo
+        ME_CONFIG_OPTIONS_EDITORTHEME: "ambiance"
+        ME_CONFIG_BASICAUTH_USERNAME: "user"
+        ME_CONFIG_BASICAUTH_PASSWORD: "user"
+        ME_CONFIG_MONGODB_SERVER: "mongo"
+    networks:
+        - mnet
     ports:
-      - 7777:7777
+        - 8081:8081
+    depends_on:
+        - mongo
+    restart: unless-stopped
+    
+    
+networks:
+  mnet:
+   driver: bridge
